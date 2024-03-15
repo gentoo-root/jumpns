@@ -15,6 +15,9 @@ If you choose not to use `make install`, make sure to set the capabilities:
 
     # setcap CAP_SYS_ADMIN+ep jumpns
 
+jumpns must not be granted SUID or SGID permissions, because it doesn't drop
+privileges back to the regular user.
+
 ## Configuration
 
 Create the directory for ACLs:
@@ -43,3 +46,9 @@ enter which namespace. A few examples:
 For example:
 
     $ jumpns otherside bash -l
+
+## Implementation notes
+
+A slave mount namespace is unshared, and /sys is remounted to expose the correct
+netdevs under /sys/class/net et al., similar to `ip netns exec`. If /sys is not
+mounted in the original namespace, it won't be mounted in the target namespace.
